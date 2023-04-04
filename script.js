@@ -3,6 +3,41 @@ function refresh() {
     setTimeout(getTime, sec)
 }
 
+function initialClock() {
+
+    var date = new Date;
+    var seconds = date.getSeconds();
+    var minutes = date.getMinutes();
+    var hours = date.getHours();
+
+    var hands = [
+        {
+            hand: 'hours',
+            angle: (hours * 30) + (minutes / 2)
+        },
+        {
+            hand: 'minutes',
+            angle: (minutes * 6)
+        },
+        {
+            hand: 'seconds',
+            angle: (seconds * 6)
+        }
+    ];
+
+    for (var count = 0; count < hands.length; count++) {
+        var elements = document.querySelectorAll('.' + hands[count].hand);
+        for (var c = 0; c < elements.length; c++) {
+            elements[c].style.webkitTransform = 'rotateZ('+ hands[count].angle + 'deg)';
+            elements[c].style.transform = 'rotateZ('+ hands[count].angle + 'deg)';
+        }
+
+        if (hands[count].hand === 'minutes') {
+            elements[c].parentNode.setAttribute('data-second-angle', hands[count+1].angle)
+        }
+    }
+}
+
 function getTime() {
     var date = new Date()
     var hours = date.getHours();
@@ -16,4 +51,5 @@ function getTime() {
     var time = `${hours} : ${minutes} : ${seconds}`
     document.getElementById('time').innerHTML = time;
     refresh();
+    initialClock();
 }
