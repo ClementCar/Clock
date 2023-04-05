@@ -1,7 +1,57 @@
+function main() {
+    moveSecondHands();
+    setUpMinuteHands();
+  };
+
 function refresh() {
     var sec = 1000;
     setTimeout(getTime, sec)
 }
+
+function setUpMinuteHands() {
+    var containers = document.querySelectorAll('minutes');
+    var secondAngle = containers[0].getAttribute('data-second-angle');
+    if (secondAngle > 0) {
+        var delay = (((360 - secondAngle) / 6) +0.1) *1000;
+        setTimeout(function() {
+            moveMinuteHands(containers);
+        }, delay)
+    }
+};
+
+function moveMinuteHands(containers) {
+    for (var i = 0; i < containers.length; i++) {
+        containers[i].style.webkitTransform = 'rotateZ(6deg)';
+        containers[i].style.transform = 'rotateZ(6deg)';
+    }
+
+    setInterval(function() {
+        for (var i=0; i < containers.length; i++) {
+            if(containers[i].angle === undefined) {
+                containers[i].angle = 12;
+            } else {
+                containers[i].angle += 6;
+            }
+            containers[i].style.webkitTransform = 'rotateZ(' + containers[i].angle + deg + 'deg)';
+            containers[i].style.transform = 'rotateZ(' + containers[i].angle + deg + 'deg)';
+        }
+    }, 6000)
+}
+
+function moveSecondHands() {
+    var containers = document.querySelectorAll('.seconds-container');
+    setInterval(function() {
+      for (var i = 0; i < containers.length; i++) {
+        if (containers[i].angle === undefined) {
+          containers[i].angle = 6;
+        } else {
+          containers[i].angle += 6;
+        }
+        containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
+        containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
+      }
+    }, 1000);
+  }
 
 function initialClock() {
 
@@ -12,15 +62,15 @@ function initialClock() {
 
     var hands = [
         {
-            hand: 'hours',
+            hand: 'hour',
             angle: (hours * 30) + (minutes / 2)
         },
         {
-            hand: 'minutes',
+            hand: 'minute',
             angle: (minutes * 6)
         },
         {
-            hand: 'seconds',
+            hand: 'second',
             angle: (seconds * 6)
         }
     ];
@@ -32,8 +82,9 @@ function initialClock() {
             elements[c].style.transform = 'rotateZ('+ hands[count].angle + 'deg)';
         }
 
-        if (hands[count].hand === 'minutes') {
-            elements[c].parentNode.setAttribute('data-second-angle', hands[count+1].angle)
+        if (hands[count].hand === 'minute') {
+            // console.log(elements[c])
+            elements[c].parentElement.setAttribute('data-second-angle', hands[count +1 ].angle)
         }
     }
 }
